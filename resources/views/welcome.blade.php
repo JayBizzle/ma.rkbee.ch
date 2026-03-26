@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,19 +36,68 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* ── THEME VARIABLES ── */
+        :root {
+            --bg: #0a0a0f;
+            --bg-rgb: 10, 10, 15;
+            --surface: rgba(18, 18, 26, 0.6);
+            --text: #e2e8f0;
+            --text-heading: #ffffff;
+            --text-muted: #94a3b8;
+            --text-faint: #64748b;
+            --accent: #00f0ff;
+            --accent-rgb: 0, 240, 255;
+            --accent-hover: #00f0ff;
+            --accent-dark: #0a0a0f;
+            --violet-rgb: 139, 92, 246;
+            --grid-opacity: 0.03;
+            --orb-opacity: 0.12;
+            --card-border: rgba(0, 240, 255, 0.06);
+            --divider-opacity: 0.15;
+            --nav-bg: rgba(10, 10, 15, 0.7);
+            --selection-bg: rgba(0, 240, 255, 0.25);
+            --tag-bg: rgba(0, 240, 255, 0.04);
+            --tag-border: rgba(0, 240, 255, 0.08);
+            --footer-border: rgba(255, 255, 255, 0.05);
+        }
+
+        [data-theme="light"] {
+            --bg: #f0f1f6;
+            --bg-rgb: 240, 241, 246;
+            --surface: rgba(255, 255, 255, 0.7);
+            --text: #334155;
+            --text-heading: #0f172a;
+            --text-muted: #64748b;
+            --text-faint: #94a3b8;
+            --accent: #0e7490;
+            --accent-rgb: 14, 116, 144;
+            --accent-hover: #06b6d4;
+            --accent-dark: #ffffff;
+            --grid-opacity: 0.06;
+            --orb-opacity: 0.08;
+            --card-border: rgba(14, 116, 144, 0.12);
+            --divider-opacity: 0.25;
+            --nav-bg: rgba(240, 241, 246, 0.8);
+            --selection-bg: rgba(14, 116, 144, 0.2);
+            --tag-bg: rgba(14, 116, 144, 0.06);
+            --tag-border: rgba(14, 116, 144, 0.15);
+            --footer-border: rgba(0, 0, 0, 0.06);
+        }
+
         /* ── BASE ── */
         *, *::before, *::after { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
             margin: 0;
-            background: #0a0a0f;
-            color: #e2e8f0;
+            background: var(--bg);
+            color: var(--text);
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            transition: background 0.5s ease, color 0.5s ease;
         }
         ::selection {
-            background: rgba(0, 240, 255, 0.25);
-            color: #00f0ff;
+            background: var(--selection-bg);
+            color: var(--accent);
         }
 
         /* ── ANIMATED GRID BACKGROUND ── */
@@ -63,17 +113,18 @@
             position: absolute;
             inset: -50%;
             background-image:
-                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(var(--accent-rgb), var(--grid-opacity)) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(var(--accent-rgb), var(--grid-opacity)) 1px, transparent 1px);
             background-size: 60px 60px;
             animation: gridDrift 25s linear infinite;
+            transition: background-image 0.5s ease;
         }
         .grid-bg::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 240, 255, 0.06) 0%, transparent 60%),
-                        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.04) 0%, transparent 50%);
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(var(--accent-rgb), 0.06) 0%, transparent 60%),
+                        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(var(--violet-rgb), 0.04) 0%, transparent 50%);
         }
         @keyframes gridDrift {
             0% { transform: translate(0, 0); }
@@ -87,9 +138,10 @@
             height: 600px;
             border-radius: 50%;
             filter: blur(120px);
-            opacity: 0.12;
+            opacity: var(--orb-opacity);
             pointer-events: none;
             z-index: 0;
+            transition: opacity 0.5s ease;
         }
         .orb-1 {
             top: -200px;
@@ -116,12 +168,13 @@
         .navbar {
             backdrop-filter: blur(20px) saturate(1.4);
             -webkit-backdrop-filter: blur(20px) saturate(1.4);
-            background: rgba(10, 10, 15, 0.7);
-            border-bottom: 1px solid rgba(0, 240, 255, 0.08);
+            background: var(--nav-bg);
+            border-bottom: 1px solid rgba(var(--accent-rgb), 0.08);
+            transition: background 0.5s ease, border-color 0.5s ease;
         }
         .nav-link {
             position: relative;
-            color: #94a3b8;
+            color: var(--text-muted);
             transition: color 0.3s ease;
         }
         .nav-link::after {
@@ -131,16 +184,16 @@
             left: 0;
             width: 0;
             height: 1px;
-            background: linear-gradient(90deg, #00f0ff, #8b5cf6);
+            background: linear-gradient(90deg, var(--accent), #8b5cf6);
             transition: width 0.3s ease;
         }
-        .nav-link:hover { color: #00f0ff; }
+        .nav-link:hover { color: var(--accent); }
         .nav-link:hover::after { width: 100%; }
 
         /* ── TYPEWRITER ── */
         .typewriter {
             display: inline;
-            border-right: 2px solid #00f0ff;
+            border-right: 2px solid var(--accent);
             animation: blink 0.75s step-end infinite;
         }
         @keyframes blink {
@@ -165,11 +218,11 @@
         /* ── PROJECT CARDS ── */
         .project-card {
             position: relative;
-            background: rgba(18, 18, 26, 0.6);
-            border: 1px solid rgba(0, 240, 255, 0.06);
+            background: var(--surface);
+            border: 1px solid var(--card-border);
             border-radius: 16px;
             padding: 2rem;
-            transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+            transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, background 0.5s ease;
             overflow: hidden;
         }
         .project-card::before {
@@ -187,14 +240,14 @@
         }
         .project-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(0, 240, 255, 0.15);
+            border-color: rgba(var(--accent-rgb), 0.15);
             box-shadow:
-                0 0 30px rgba(0, 240, 255, 0.08),
-                0 0 60px rgba(0, 240, 255, 0.04),
-                inset 0 1px 0 rgba(0, 240, 255, 0.06);
+                0 0 30px rgba(var(--accent-rgb), 0.08),
+                0 0 60px rgba(var(--accent-rgb), 0.04),
+                inset 0 1px 0 rgba(var(--accent-rgb), 0.06);
         }
         .project-card:hover::before {
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.15), rgba(0, 240, 255, 0.2));
+            background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.2), rgba(var(--violet-rgb), 0.15), rgba(var(--accent-rgb), 0.2));
         }
         /* scanning line on hover */
         .project-card::after {
@@ -204,7 +257,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(180deg, transparent 40%, rgba(0, 240, 255, 0.03) 50%, transparent 60%);
+            background: linear-gradient(180deg, transparent 40%, rgba(var(--accent-rgb), 0.03) 50%, transparent 60%);
             transition: top 0.6s ease;
             pointer-events: none;
         }
@@ -218,18 +271,18 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.5rem 1.25rem;
-            border: 1px solid rgba(0, 240, 255, 0.2);
+            border: 1px solid rgba(var(--accent-rgb), 0.2);
             border-radius: 8px;
-            color: #00f0ff;
+            color: var(--accent);
             font-size: 0.875rem;
             font-weight: 600;
             transition: all 0.3s ease;
             text-decoration: none;
         }
         .gh-btn:hover {
-            background: rgba(0, 240, 255, 0.08);
-            border-color: rgba(0, 240, 255, 0.4);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+            background: rgba(var(--accent-rgb), 0.08);
+            border-color: rgba(var(--accent-rgb), 0.4);
+            box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.1);
         }
 
         /* ── CTA BUTTONS ── */
@@ -239,26 +292,26 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.875rem 2rem;
-            background: linear-gradient(135deg, #00f0ff, #00c4d4);
-            color: #0a0a0f;
+            background: linear-gradient(135deg, var(--accent), rgba(var(--accent-rgb), 0.8));
+            color: var(--accent-dark);
             font-weight: 600;
             font-size: 0.875rem;
             border-radius: 10px;
             text-decoration: none;
             transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.2);
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.35);
+            box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.35);
         }
         .btn-secondary {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             padding: 0.875rem 2rem;
-            border: 1px solid rgba(0, 240, 255, 0.25);
-            color: #00f0ff;
+            border: 1px solid rgba(var(--accent-rgb), 0.25);
+            color: var(--accent);
             font-weight: 500;
             font-size: 0.875rem;
             border-radius: 10px;
@@ -266,15 +319,16 @@
             transition: all 0.3s ease;
         }
         .btn-secondary:hover {
-            background: rgba(0, 240, 255, 0.06);
-            border-color: rgba(0, 240, 255, 0.45);
+            background: rgba(var(--accent-rgb), 0.06);
+            border-color: rgba(var(--accent-rgb), 0.45);
             transform: translateY(-2px);
         }
 
         /* ── SECTION DIVIDER ── */
         .divider {
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.15), rgba(139, 92, 246, 0.15), transparent);
+            background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), var(--divider-opacity)), rgba(var(--violet-rgb), var(--divider-opacity)), transparent);
+            transition: background 0.5s ease;
         }
 
         /* ── SCROLL REVEAL ── */
@@ -294,16 +348,16 @@
             align-items: center;
             gap: 0.4rem;
             padding: 0.4rem 1rem;
-            background: rgba(0, 240, 255, 0.04);
-            border: 1px solid rgba(0, 240, 255, 0.08);
+            background: var(--tag-bg);
+            border: 1px solid var(--tag-border);
             border-radius: 999px;
             font-size: 0.875rem;
-            color: #94a3b8;
+            color: var(--text-muted);
             transition: all 0.3s ease;
         }
         .about-tag:hover {
-            border-color: rgba(0, 240, 255, 0.2);
-            color: #00f0ff;
+            border-color: rgba(var(--accent-rgb), 0.2);
+            color: var(--accent);
         }
 
         /* ── CONTACT LINK ── */
@@ -311,20 +365,20 @@
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            color: #00f0ff;
+            color: var(--accent);
             text-decoration: none;
             font-family: 'JetBrains Mono', monospace;
             font-size: 1.25rem;
             font-weight: 500;
             padding: 1rem 2rem;
-            border: 1px solid rgba(0, 240, 255, 0.15);
+            border: 1px solid rgba(var(--accent-rgb), 0.15);
             border-radius: 12px;
             transition: all 0.3s ease;
         }
         .contact-link:hover {
-            background: rgba(0, 240, 255, 0.06);
-            border-color: rgba(0, 240, 255, 0.35);
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
+            background: rgba(var(--accent-rgb), 0.06);
+            border-color: rgba(var(--accent-rgb), 0.35);
+            box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.1);
         }
 
         /* ── MOBILE NAV ── */
@@ -350,9 +404,76 @@
 
         /* ── FOCUS STYLES ── */
         a:focus-visible, button:focus-visible {
-            outline: 2px solid #00f0ff;
+            outline: 2px solid var(--accent);
             outline-offset: 2px;
         }
+
+        /* ── THEME TOGGLE ── */
+        .theme-toggle {
+            position: relative;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            border: 1px solid rgba(var(--accent-rgb), 0.15);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.3s ease, background 0.3s ease;
+            overflow: hidden;
+        }
+        .theme-toggle:hover {
+            border-color: rgba(var(--accent-rgb), 0.4);
+            background: rgba(var(--accent-rgb), 0.06);
+        }
+        .theme-toggle svg {
+            position: absolute;
+            width: 1.125rem;
+            height: 1.125rem;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+        .theme-toggle .icon-sun {
+            color: var(--accent);
+            transform: rotate(0deg) scale(1);
+            opacity: 1;
+        }
+        .theme-toggle .icon-moon {
+            color: var(--accent);
+            transform: rotate(-90deg) scale(0);
+            opacity: 0;
+        }
+        [data-theme="light"] .theme-toggle .icon-sun {
+            transform: rotate(90deg) scale(0);
+            opacity: 0;
+        }
+        [data-theme="light"] .theme-toggle .icon-moon {
+            transform: rotate(0deg) scale(1);
+            opacity: 1;
+        }
+
+        /* ── LIGHT MODE TAILWIND OVERRIDES ── */
+        [data-theme="light"] .text-white { color: var(--text-heading); }
+        [data-theme="light"] .text-slate-300 { color: #475569; }
+        [data-theme="light"] .text-slate-400 { color: #64748b; }
+        [data-theme="light"] .text-slate-500 { color: #94a3b8; }
+        [data-theme="light"] .text-slate-600 { color: #94a3b8; }
+        [data-theme="light"] .text-cyan { color: var(--accent); }
+        [data-theme="light"] .text-cyan\/60 { color: #0e7490; }
+        [data-theme="light"] .text-cyan\/50 { color: #0e7490; }
+        [data-theme="light"] .text-cyan\/80 { color: #0e7490; }
+        [data-theme="light"] .from-cyan { --tw-gradient-from: var(--accent); }
+        [data-theme="light"] .to-violet { --tw-gradient-to: #7c3aed; }
+        [data-theme="light"] .bg-cyan\/5 { background-color: rgba(var(--accent-rgb), 0.05); }
+        [data-theme="light"] .border-cyan\/10 { border-color: rgba(var(--accent-rgb), 0.1); }
+        [data-theme="light"] .bg-violet\/5 { background-color: rgba(var(--violet-rgb), 0.05); }
+        [data-theme="light"] .border-violet\/10 { border-color: rgba(var(--violet-rgb), 0.1); }
+        [data-theme="light"] .bg-white\/5 { background-color: rgba(0, 0, 0, 0.03); }
+        [data-theme="light"] .border-white\/10 { border-color: rgba(0, 0, 0, 0.08); }
+        [data-theme="light"] .border-white\/5 { border-color: var(--footer-border); }
+        [data-theme="light"] .bg-void\/95 { background-color: rgba(240, 241, 246, 0.95); }
+        [data-theme="light"] .border-cyan\/10 { border-color: rgba(var(--accent-rgb), 0.1); }
+        [data-theme="light"] .bg-slate-400 { background-color: #64748b; }
     </style>
 </head>
 <body class="antialiased">
@@ -372,13 +493,23 @@
                 <a href="#projects" class="nav-link font-mono text-xs tracking-widest uppercase">Projects</a>
                 <a href="#about" class="nav-link font-mono text-xs tracking-widest uppercase">About</a>
                 <a href="#contact" class="nav-link font-mono text-xs tracking-widest uppercase">Contact</a>
+                <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                    <svg class="icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+                </button>
             </div>
-            <!-- Mobile Hamburger -->
-            <button id="menuBtn" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+            <!-- Mobile: theme toggle + hamburger -->
+            <div class="md:hidden flex items-center gap-3">
+                <button id="themeToggleMobile" class="theme-toggle" aria-label="Toggle theme">
+                    <svg class="icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+                </button>
+                <button id="menuBtn" class="flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
                 <span class="w-5 h-px bg-slate-400 transition-all duration-300" id="bar1"></span>
                 <span class="w-5 h-px bg-slate-400 transition-all duration-300" id="bar2"></span>
                 <span class="w-5 h-px bg-slate-400 transition-all duration-300" id="bar3"></span>
             </button>
+            </div>
         </div>
         <!-- Mobile Menu -->
         <div id="mobileMenu" class="mobile-menu fixed top-16 right-0 bottom-0 w-64 bg-void/95 backdrop-blur-xl border-l border-cyan/10 md:hidden flex flex-col pt-8 px-8 gap-6 z-50">
@@ -610,6 +741,23 @@
 
     <!-- ═══ SCRIPTS ═══ -->
     <script>
+        // ── Theme toggle ──
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isLight = html.getAttribute('data-theme') === 'light';
+            html.setAttribute('data-theme', isLight ? 'dark' : 'light');
+            localStorage.setItem('theme', isLight ? 'dark' : 'light');
+        }
+        // Restore saved preference
+        (function () {
+            const saved = localStorage.getItem('theme');
+            if (saved === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
+
         // ── Mobile menu toggle ──
         const menuBtn = document.getElementById('menuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
